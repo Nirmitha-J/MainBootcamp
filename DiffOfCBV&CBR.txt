@@ -1,0 +1,78 @@
+5) How to copy by value a composite data type (array+objects). 
+
+There are 3 ways to copy by value for composite data types.
+-Using the spread (...) operator
+-Using the Object.assign() method
+-Using the JSON.stringify() and JSON.parse() methods
+
+1). Using Spread (shallow copy)
+Spread operator allows an iterable to expand in places where 0+ arguments are expected. 
+It is mostly used in the variable array where there is more than 1 values are expected. 
+It allows us the privilege to obtain a list of parameters from an array.
+Using spread will clone your object. Note this will be a shallow copy.
+
+example: 
+var a = [1,2,3];
+var b = [...a];
+var b[1]=100;
+console.log(a,b); // [1,2,3] [1,100,3];
+
+2). Using Object.assign() (shallow copy)
+The Object.assign() method copies all enumerable own properties from one or more source objects to a target object.
+It returns the target object. 
+Note this will be a shallow copy.
+
+example: 
+var a = [1,2,3];
+var b = Object.assign([],a);
+var b[1]=100;
+console.log(a,b); // [1,2,3] [1,100,3];
+
+Note the empty [] as the first argument, this will ensure you don't mutate the original object
+
+3). Using JSON.parse() and JSON.stringify() (deep copy)
+The JSON object, available in all modern browsers, has two useful methods to deal with JSON-formatted content: parse and stringify. 
+JSON.parse() takes a JSON string and transforms it into a JavaScript object. 
+JSON.stringify() takes a JavaScript object and transforms it into a JSON string.
+Using JSON.parse() and JSON.stringify() for copy performs deep copy .
+
+example: 
+var a = [1,2,3];
+var b = JSON.parse(JSON.strigify(a));
+var b[1]=100;
+console.log(a,b); // [1,2,3] [1,100,3];
+
+4). Array.from (shallow copy)
+var a = [1,2,3];
+var b = Array.from(a);
+var b[1]=100;
+console.log(a,b); // [1,2,3] [1,100,3];
+
+5) Array.slice (shallow copy)
+
+var a = [1,2,3];
+var b = a.splice(0);
+var b[1]=100;
+console.log(a,b); // [1,2,3] [1,100,3];
+------------------------------------------------------
+
+
+Deep copy:
+
+1)Using JSON.parse() and JSON.stringify() (deep copy)
+
+The JSON object, available in all modern browsers, has two useful methods to deal with JSON-formatted content: parse and stringify. 
+JSON.parse() takes a JSON string and transforms it into a JavaScript object. 
+JSON.stringify() takes a JavaScript object and transforms it into a JSON string.
+Using JSON.parse() and JSON.stringify() for copy performs deep copy .
+
+example: 
+var a = [1,2,3];
+var b = JSON.parse(JSON.strigify(a));
+var b[1]=100;
+console.log(a,b); // [1,2,3] [1,100,3];
+
+Reference: https://sarathchand1.medium.com/how-do-you-copy-by-value-a-composite-data-type-in-javascript-df135b204cf
+https://www.youtube.com/watch?v=duyshh9Fs1U
+
+          

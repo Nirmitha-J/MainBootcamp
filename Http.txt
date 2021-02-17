@@ -1,0 +1,166 @@
+1) Difference between HTTP1.1 vs HTTP2 and HTTP version history?
+
+Ans: 
+-Invented by Tim Berners Lee in the years 1989-1991. 
+-HTTP(Hypertext Transfer protocol) is underlying commication protocol used in world wide web.
+-HTTP functions as request-response protocol in clien-server computing model.
+-HTTP has four versions HTTP/0.9, HTTP/1.0, HTTP/1.1 and HTTP/2.0
+
+1) HTTP/0.9 — The One-line Protocol:
+
+-Initial version of HTTP — a simple client-server, request-response, telenet-friendly protocol
+-Request nature: single-line (method + path for requested document)
+-Methods supported: GET only
+-Response type: hypertext only
+-Connection nature: terminated immediately after the response
+-No HTTP headers (cannot transfer other content type files), No status/error codes, No URLs, No versioning
+
+example:
+$> telnet ashenlive.com 80
+(Connection 1 Establishment - TCP Three-Way Handshake)
+Connected to xxx.xxx.xxx.xxx
+(Request)
+GET /my-page.html
+(Response in hypertext)
+<HTML>
+A very simple HTML page
+</HTML>
+(Connection 1 Closed - TCP Teardown)
+------------------------------------------------------------------
+
+2)HTTP/1.0 — Building extensibility
+
+-Browser-friendly protocol
+-Provided header fields including rich metadata about both request and response (HTTP version number, status code, content type)
+-Response: not limited to hypertext (Content-Type header provided ability to transmit files other than plain HTML files — e.g. scripts, stylesheets, media)
+-Methods supported: GET , HEAD , POST
+-Connection nature: terminated immediately after the response
+
+example: 
+(Connection 1 Establishment - TCP Three-Way Handshake)
+Connected to xxx.xxx.xxx.xxx
+(Request)
+GET /my-page.html HTTP/1.0 
+User-Agent: NCSA_Mosaic/2.0 (Windows 3.1)
+(Response)
+HTTP/1.0 200 OK 
+Content-Type: text/html 
+Content-Length: 137582
+Expires: Thu, 01 Dec 1997 16:00:00 GMT
+Last-Modified: Wed, 1 May 1996 12:45:26 GMT
+Server: Apache 0.84
+
+<HTML> 
+A page with an image
+  <IMG SRC="/myimage.gif">
+</HTML>
+(Connection 1 Closed - TCP Teardown)
+------------------------------------------
+(Connection 2 Establishment - TCP Three-Way Handshake)
+Connected to xxx.xxx.xxx.xxx
+(Request)
+GET /myimage.gif HTTP/1.0
+User-Agent: NCSA_Mosaic/2.0 (Windows 3.1)
+
+(Response)
+HTTP/1.0 200 OK 
+Content-Type: text/gif 
+Content-Length: 137582
+Expires: Thu, 01 Dec 1997 16:00:00 GMT
+Last-Modified: Wed, 1 May 1996 12:45:26 GMT
+Server: Apache 0.84
+[image content]
+(Connection 2 Closed - TCP Teardown)
+--------------------------------------------------------------
+
+
+Establishing a new connection for each request — major problem in both HTTP/0.9 and HTTP/1.0
+
+Both HTTP/0.9 and HTTP/1.0 required to open up a new connection for each request (and close it immediately after the response was sent). 
+Each time a new connection establishes, a TCP three-way handshake should also occur.
+For better performance, it was crucial to reduce these round-trips between client and server. HTTP/1.1 solved this with persistent connections.
+
+------------------------------------------------------------------------
+
+HTTP/1.1 — The standardized protocol
+
+-This is the HTTP version currently in common use.
+-Introduced critical performance optimizations and feature enhancements — persistent and pipelined connections, chunked transfers, 
+compression/decompression, content negotiations, virtual hosting (a server with a single IP Address hosting multiple domains), 
+faster response and great bandwidth savings by adding cache support.
+-Methods supported: GET , HEAD , POST , PUT , DELETE , TRACE , OPTIONS
+-Connection nature: long-lived
+
+example:
+(Connection 1 Establishment - TCP Three-Way Handshake)
+Connected to xxx.xxx.xxx.xxx
+(Request 1)
+GET /en-US/docs/Glossary/Simple_header HTTP/1.1
+Host: developer.mozilla.org
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:50.0) Gecko/20100101 Firefox/50.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Referer: https://developer.mozilla.org/en-US/docs/Glossary/Simple_header
+
+(Response 1)
+HTTP/1.1 200 OK
+Connection: Keep-Alive
+Content-Encoding: gzip
+Content-Type: text/html; charset=utf-8
+Date: Wed, 20 Jul 2016 10:55:30 GMT
+Etag: "547fa7e369ef56031dd3bff2ace9fc0832eb251a"
+Keep-Alive: timeout=5, max=1000
+Last-Modified: Tue, 19 Jul 2016 00:59:33 GMT
+Server: Apache
+Transfer-Encoding: chunked
+Vary: Cookie, Accept-Encoding
+
+[content]
+
+(Request 2)
+GET /static/img/header-background.png HTTP/1.1
+Host: developer.cdn.mozilla.net
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:50.0) Gecko/20100101 Firefox/50.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Referer: https://developer.mozilla.org/en-US/docs/Glossary/Simple_header
+
+(Response 2)
+HTTP/1.1 200 OK
+Age: 9578461
+Cache-Control: public, max-age=315360000
+Connection: keep-alive
+Content-Length: 3077
+Content-Type: image/png
+Date: Thu, 31 Mar 2016 13:34:46 GMT
+Last-Modified: Wed, 21 Oct 2015 18:27:50 GMT
+Server: Apache
+
+[image content of 3077 bytes]
+(Connection 1 Closed - TCP Teardown)
+-----------------------------------------------------------------------------------------
+
+HTTP2
+
+-HTTP/2 was released in 2015 as a major revision to the HTTP/1.1 protocol. 
+-It was derived from the SPDY protocol as a way to improve the online experience by speeding up page loads and reducing round-trip time (RTT), 
+especially on resource-heavy web pages.
+-------------------------------------------------------------------------------------
+
+HTTP/1.1 vs. HTTP/2 Protocol
+-HTTP/2 improved on HTTP/1.1 in a number of ways that allowed for speedier content delivery and improved user experience, including:
+
+-Binary protocols – Binary protocols consume less bandwidth, are more efficiently parsed and are less error-prone than the textual protocols used by HTTP/1.1. Additionally, they can better handle elements such as whitespace, capitalization and line endings.
+-Multiplexing – HTTP/2 is multiplexed, i.e., it can initiate multiple requests in parallel over a single TCP connection. As a result, web pages containing several elements are delivered over one TCP connection. These capabilities solve the head-of-line blocking problem in HTTP/1.1, in which a packet at the front of the line blocks others from being transmitted.
+-Header compression – HTTP/2 uses header compression to reduce the overhead caused by TCP’s slow-start mechanism.
+-Server push – HTTP/2 servers push likely-to-be-used resources into a browser’s cache, even before they’re requested. This allows browsers to display content without additional request cycles.
+-Increased security – Web browsers only support HTTP/2 via encrypted connections, increasing user and application security.
+
+Resources: https://medium.com/platform-engineer/evolution-of-http-69cfe6531ba0#:~:text=HTTP%20has%20four%20versions%20%E2%80%94%20HTTP,future%20will%20be%20HTTP%2F2.0.
+https://www.imperva.com/learn/performance/http2/
+
+
+
+
